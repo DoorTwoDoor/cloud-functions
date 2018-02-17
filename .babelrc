@@ -1,0 +1,10 @@
+{
+  "comments": false,
+  "presets": ["env", "flow", "stage-2"],
+  "env": {
+    "production": {
+      "presets": ["minify"]
+    }
+  },
+  "plugins": ["transform-runtime"]
+}
