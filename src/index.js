@@ -56,7 +56,7 @@ function exportFunctionNames() {
 
     if (!process.env.FUNCTION_NAME ||
         process.env.FUNCTION_NAME === functionName) {
-      exports[functionName] = require(filename);
+      exports[functionName] = require(filename).default;
     }
   }
 }
