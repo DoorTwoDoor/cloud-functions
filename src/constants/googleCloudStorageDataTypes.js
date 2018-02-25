@@ -60,8 +60,19 @@ const THUMBNAIL_METADATA = {
   },
 };
 
+/**
+ * Stores the URI scheme for Google Cloud Storage.
+ * 
+ * @constant
+ * @default
+ * @memberof GoogleCloudStorageDataTypes
+ * @readonly
+ */
+const URI_SCHEME = 'gs';
+
 export {
   IMAGE_CONTENT_TYPE,
   RESOURCE_STATES,
   THUMBNAIL_METADATA,
+  URI_SCHEME,
 };

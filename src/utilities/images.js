@@ -28,6 +28,7 @@ import sharp from 'sharp';
  * 
  * @constant
  * @memberof Images
+ * @private
  * @readonly
  */
 const imageAnnotatorClient = new googleCloudVision.ImageAnnotatorClient();
@@ -45,10 +46,7 @@ function applyImageTransformations({
 }) {
   return imageTransformations.reduce((readableStream, transformFunction) => {
     if (transformFunction.length === 2) {
-      return transformFunction({
-        readableStream,
-        size,
-      });
+      return transformFunction(readableStream, size);
     }
     
     return transformFunction(readableStream);
@@ -74,10 +72,7 @@ function blurImage(readableStream) {
  * @memberof Images
  * @public
  */
-function generateThumbnail({
-  readableStream,
-  size,
-}) {
+function generateThumbnail(readableStream, size) {
   // Destructures the height and width properties from the size object.
   const {
     height,

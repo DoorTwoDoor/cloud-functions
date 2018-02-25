@@ -28,9 +28,14 @@ import {
   getExtensionName,
   getFileName,
   getTemporaryFilePath,
+  getThumbnailFileName,
   joinPaths,
-  makeDirectory,
 } from './fileSystem';
+import {
+  getGoogleCloudStorageURI,
+  getReadStream,
+  getWriteStream,
+} from './googleCloudStorage';
 
 import { getPromiseFromWritableStream } from './streams';
 
@@ -42,11 +47,14 @@ export {
   getDirectoryName,
   getExtensionName,
   getFileName,
+  getGoogleCloudStorageURI,
   getPromiseFromWritableStream,
+  getReadStream,
   getTemporaryFilePath,
+  getThumbnailFileName,
+  getWriteStream,
   isImage,
   isOffensiveImage,
   isThumbnail,
   joinPaths,
-  makeDirectory,
 };

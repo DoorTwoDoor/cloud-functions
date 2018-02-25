@@ -27,14 +27,16 @@ import {
   getDirectoryName,
   getExtensionName,
   getFileName,
+  getGoogleCloudStorageURI,
   getPromiseFromWritableStream,
+  getReadStream,
+  getThumbnailFileName,
+  getWriteStream,
   isImage,
   isOffensiveImage,
   isThumbnail,
   joinPaths,
 } from '../../utilities';
-
-import googleCloudStorage from '@google-cloud/storage';
 
 /**
  * Blurs the given image located in the given bucket using ImageMagick.
@@ -66,10 +68,11 @@ function generateThumbnails({
       size,
       suffix,
     } = THUMBNAIL_METADATA[key];
-    
-    const bucket = googleCloudStorage().bucket(bucketName);
 
-    const imageDownloadStream = bucket.file(filePath).createReadStream();
+    const imageDownloadStream = getReadStream({
+      bucketName,
+      filePath,
+    });
     
     const imageTransformations = shouldBlur?
       [ blurImage, generateThumbnail ]: [ generateThumbnail ];
@@ -80,7 +83,11 @@ function generateThumbnails({
       size,
     }); 
     
-    const thumbnailFileName = `${fileName}_${suffix}${extensionName}`;
+    const thumbnailFileName = getThumbnailFileName({
+      extensionName,
+      fileName,
+      suffix,
+    });
     
     const thumbnailFilePath = joinPaths([ directoryName, thumbnailFileName ]);
     
@@ -91,8 +98,11 @@ function generateThumbnails({
       },
     };
 
-    const thumbnailUploadStream =
-      bucket.file(thumbnailFilePath).createWriteStream(options);
+    const thumbnailUploadStream = getWriteStream({
+        bucketName,
+        filePath: thumbnailFilePath,
+        options,
+      });
     
     imageProcessingStream.pipe(thumbnailUploadStream);
     
@@ -150,10 +160,13 @@ async function handleChangeEvent({
     }
 
     // Stores the Google Cloud Storage URI to the image.
-    const googleCloudStorageURI = `gs://${bucketName}/${filePath}`;
+    const googleCloudStorageURI = getGoogleCloudStorageURI({
+      bucketName,
+      filePath,
+    });
         
     // Stores whether the image contains offensive content and should be blur. 
-    const shouldBlur = isOffensiveImage(googleCloudStorageURI);
+    const shouldBlur = await isOffensiveImage(googleCloudStorageURI);
   
     // Generates thumbnails and blurs them if necessary.
     await generateThumbnails({

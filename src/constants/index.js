@@ -18,6 +18,7 @@ import {
   IMAGE_CONTENT_TYPE,
   RESOURCE_STATES,
   THUMBNAIL_METADATA,
+  URI_SCHEME,
 } from './googleCloudStorageDataTypes';
 
 import { LIKELIHOODS } from './googleCloudVisionDataTypes';
@@ -27,4 +28,5 @@ export {
   LIKELIHOODS,
   RESOURCE_STATES,
   THUMBNAIL_METADATA,
+  URI_SCHEME,
 };

@@ -15,7 +15,6 @@
  */
 
 import fs from 'fs';
-import mkdirpPromise from 'mkdirp-promise';
 import os from 'os';
 import path from 'path';
 
@@ -80,6 +79,20 @@ function getTemporaryFilePath(filePath) {
 }
 
 /**
+ * Gets the thumbnail file name.
+ * 
+ * @memberof FileSystem
+ * @public
+ */
+function getThumbnailFileName({
+  extensionName,
+  fileName,
+  suffix,
+}) {
+  return `${fileName}_${suffix}${extensionName}`
+}
+
+/**
  * Joins paths together into a single path.
  * 
  * @memberof FileSystem
@@ -89,22 +102,12 @@ function joinPaths(paths) {
   return path.join(...paths);
 }
 
-/**
- * Makes a directory with the given name.
- * 
- * @memberof FileSystem
- * @public 
- */
-function makeDirectory(directoryName) {
-  return mkdirpPromise(directoryName);
-}
-
 export {
   deleteFile,
   getDirectoryName,
   getExtensionName,
   getFileName,
   getTemporaryFilePath,
+  getThumbnailFileName,
   joinPaths,
-  makeDirectory,
 };
