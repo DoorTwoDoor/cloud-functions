@@ -15,14 +15,6 @@
  */
 
 import {
-  applyImageTransformations,
-  blurImage,
-  generateThumbnail,
-  isImage,
-  isOffensiveImage,
-  isThumbnail,
-} from './images';
-import {
   deleteFile,
   getDirectoryName,
   getExtensionName,
@@ -32,6 +24,13 @@ import {
   joinPaths,
 } from './fileSystem';
 import {
+  generateThumbnails,
+  isImage,
+  isOffensiveImage,
+  isThumbnail,
+  moderateImage,
+} from './images';
+import {
   getGoogleCloudStorageURI,
   getReadStream,
   getWriteStream,
@@ -40,10 +39,8 @@ import {
 import { getPromiseFromWritableStream } from './streams';
 
 export {
-  applyImageTransformations,
-  blurImage,
   deleteFile,
-  generateThumbnail,
+  generateThumbnails,
   getDirectoryName,
   getExtensionName,
   getFileName,
@@ -57,4 +54,5 @@ export {
   isOffensiveImage,
   isThumbnail,
   joinPaths,
+  moderateImage,
 };

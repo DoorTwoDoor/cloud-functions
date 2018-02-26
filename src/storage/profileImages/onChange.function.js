@@ -21,99 +21,17 @@ import {
   THUMBNAIL_METADATA,
 } from '../../constants';
 import {
-  applyImageTransformations,
-  blurImage,
-  generateThumbnail,
-  getDirectoryName,
-  getExtensionName,
+  generateThumbnails,
   getFileName,
   getGoogleCloudStorageURI,
-  getPromiseFromWritableStream,
-  getReadStream,
-  getThumbnailFileName,
-  getWriteStream,
   isImage,
   isOffensiveImage,
   isThumbnail,
-  joinPaths,
+  moderateImage,
 } from '../../utilities';
 
 /**
- * Blurs the given image located in the given bucket using ImageMagick.
- * 
- * @memberof ProfileImageProcessing
- * @private
- */
-function generateThumbnails({
-  filePath,
-  bucketName,
-  contentType,
-  metadata,
-  shouldBlur,
-}) {
-  // Stores the file name of the image.
-  const fileName = getFileName({
-    filePath,
-    includeFileExtension: false,
-  });
-
-  // Stores the extension name of the image.
-  const extensionName = getExtensionName(filePath);
-
-  // Stores the directory name of the image.
-  const directoryName = getDirectoryName(filePath);
-
-  const promises = Object.keys(THUMBNAIL_METADATA).map(key => {
-    const {
-      size,
-      suffix,
-    } = THUMBNAIL_METADATA[key];
-
-    const imageDownloadStream = getReadStream({
-      bucketName,
-      filePath,
-    });
-    
-    const imageTransformations = shouldBlur?
-      [ blurImage, generateThumbnail ]: [ generateThumbnail ];
-      
-    const imageProcessingStream = applyImageTransformations({
-      initialReadableStream: imageDownloadStream,
-      imageTransformations,
-      size,
-    }); 
-    
-    const thumbnailFileName = getThumbnailFileName({
-      extensionName,
-      fileName,
-      suffix,
-    });
-    
-    const thumbnailFilePath = joinPaths([ directoryName, thumbnailFileName ]);
-    
-    const options = {
-      metadata: {
-        contentType,
-        metadata,
-      },
-    };
-
-    const thumbnailUploadStream = getWriteStream({
-        bucketName,
-        filePath: thumbnailFilePath,
-        options,
-      });
-    
-    imageProcessingStream.pipe(thumbnailUploadStream);
-    
-    return getPromiseFromWritableStream(thumbnailUploadStream);
-  });
-
-  return Promise.all(promises);
-}
-
-/**
- * 
+ * Handles a Google Cloud Storage change event.
  * 
  * @async
  * @memberof ProfileImageProcessing
@@ -165,8 +83,18 @@ async function handleChangeEvent({
       filePath,
     });
         
-    // Stores whether the image contains offensive content and should be blur. 
-    const shouldBlur = await isOffensiveImage(googleCloudStorageURI);
+    // Stores whether the image contains offensive content and should be moderated. 
+    const shouldModerate = await isOffensiveImage(googleCloudStorageURI);
+
+    if (shouldModerate) { // Should moderate the image?
+      // Moderates the image.
+      await moderateImage({
+        bucketName,
+        contentType,
+        filePath,
+        metadata,
+      });
+    }
   
     // Generates thumbnails and blurs them if necessary.
     await generateThumbnails({
@@ -174,7 +102,6 @@ async function handleChangeEvent({
       bucketName,
       contentType,
       metadata,
-      shouldBlur,
     });
   
   } catch (error) {
@@ -184,6 +111,15 @@ async function handleChangeEvent({
   }
 }
 
+/**
+ * Stores the cloud function, which fires every time a Google Cloud Storage
+ * change occurs.
+ * 
+ * @constant
+ * @memberof ProfileImageProcessing
+ * @public
+ * @readonly
+ */
 const processProfileImage = 
   firebaseFunctions
   .storage

@@ -19,6 +19,16 @@ import {
   LIKELIHOODS,
   THUMBNAIL_METADATA,
 } from '../constants';
+import {
+  getDirectoryName,
+  getExtensionName,
+  getFileName,
+  getPromiseFromWritableStream,
+  getReadStream,
+  getThumbnailFileName,
+  getWriteStream,
+  joinPaths,
+} from '.';
 
 import googleCloudVision from '@google-cloud/vision';
 import sharp from 'sharp';
@@ -34,30 +44,10 @@ import sharp from 'sharp';
 const imageAnnotatorClient = new googleCloudVision.ImageAnnotatorClient();
 
 /**
- * Applies the given image transformations on an image.
- * 
- * @memberof Images
- * @public
- */
-function applyImageTransformations({
-  initialReadableStream,
-  imageTransformations,
-  size,
-}) {
-  return imageTransformations.reduce((readableStream, transformFunction) => {
-    if (transformFunction.length === 2) {
-      return transformFunction(readableStream, size);
-    }
-    
-    return transformFunction(readableStream);
-  }, initialReadableStream);
-}
-
-/**
  * Blurs an image.
  * 
  * @memberof Images
- * @public
+ * @private
  */
 function blurImage(readableStream) {
   // Stores a writable stream to blur an image.
@@ -70,9 +60,12 @@ function blurImage(readableStream) {
  * Generates a thumbnail for the given size.
  * 
  * @memberof Images
- * @public
+ * @private
  */
-function generateThumbnail(readableStream, size) {
+function generateThumbnail({
+  readableStream,
+  size,
+}) {
   // Destructures the height and width properties from the size object.
   const {
     height,
@@ -83,6 +76,87 @@ function generateThumbnail(readableStream, size) {
   const writableStream = sharp().resize(width, height);
 
   return readableStream.pipe(writableStream);
+}
+
+/**
+ * Generates thumbnails for large, medium and small sizes.
+ * 
+ * @memberof Images
+ * @public
+ */
+function generateThumbnails({
+  bucketName,
+  contentType,
+  filePath,
+  metadata,
+}) {
+  // Stores the directory name of the image.
+  const directoryName = getDirectoryName(filePath);
+
+  // Stores the extension name of the image.
+  const extensionName = getExtensionName(filePath);
+
+  // Stores the file name of the image.
+  const fileName = getFileName({
+    filePath,
+    includeFileExtension: false,
+  });
+
+  // Stores the array of promises.
+  const promises = Object.keys(THUMBNAIL_METADATA).map(key => {
+    /*
+     * Destructures the large, medium and small thumbnail properties from
+     * the thumbnail metadata.
+     */
+    const {
+      size,
+      suffix,
+    } = THUMBNAIL_METADATA[key];
+
+    // Gets the image download stream.
+    const imageDownloadStream = getReadStream({
+      bucketName,
+      filePath,
+    });
+    
+    // Generates the thumbnail for the given size.
+    const imageProcessingStream = generateThumbnail({
+      readableStream: imageDownloadStream,
+      size,
+    });
+    
+    // Stores the thumbnail file name.
+    const thumbnailFileName = getThumbnailFileName({
+      extensionName,
+      fileName,
+      suffix,
+    });
+    
+    // Stores the thumbnail file path.
+    const thumbnailFilePath = joinPaths([ directoryName, thumbnailFileName ]);
+    
+    // Stores the configuration options.
+    const options = {
+      metadata: {
+        contentType,
+        metadata,
+      },
+    };
+
+    // Gets the thumbnail upload stream.
+    const imageUploadStream = getWriteStream({
+        bucketName,
+        filePath: thumbnailFilePath,
+        options,
+      });
+    
+    // Attaches the image upload stream to the image processing stream.
+    imageProcessingStream.pipe(imageUploadStream);
+    
+    return getPromiseFromWritableStream(imageUploadStream);
+  });
+
+  return Promise.all(promises);
 }
 
 /**
@@ -137,7 +211,7 @@ async function isOffensiveImage(image) {
 
   } catch (error) {
     
-    console.log(error);
+    console.error(error);
 
   }
 }
@@ -167,11 +241,52 @@ function isThumbnail(fileName) {
   );
 }
 
+/**
+ * Moderates an image if 
+ * 
+ * @memberof Images
+ * @public
+ */
+function moderateImage({
+  bucketName,
+  contentType,
+  filePath,
+  metadata,
+}) {
+  // Gets the image download stream.
+  const imageDownloadStream = getReadStream({
+    bucketName,
+    filePath,
+  });
+
+  // Blurs the image.
+  const imageProcessingStream = blurImage(imageDownloadStream);
+
+  // Stores the configuration options.
+  const options = {
+    metadata: {
+      contentType,
+      metadata,
+    },
+  };
+
+  // Gets the image upload stream.
+  const imageUploadStream = getWriteStream({
+    bucketName,
+    filePath,
+    options,
+  });
+
+  // Attaches the image upload stream to the image processing stream.
+  imageProcessingStream.pipe(imageUploadStream);
+
+  return getPromiseFromWritableStream(imageUploadStream);
+}
+
 export {
-  applyImageTransformations,
-  blurImage,
-  generateThumbnail,
+  generateThumbnails,
   isImage,
   isOffensiveImage,
   isThumbnail,
+  moderateImage,
 };
