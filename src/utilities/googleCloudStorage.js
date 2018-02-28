@@ -74,8 +74,26 @@ function getWriteStream({
     .createWriteStream(options);
 }
 
+/**
+ * Merge the given metadata with the current remote file's metadata.
+ * 
+ * @memberof GoogleCloudStorage
+ * @public
+ */
+function setMetadata({
+  bucketName,
+  filePath,
+  metadata,
+}) {
+  return storageClient
+    .bucket(bucketName)
+    .file(filePath)
+    .setMetadata(metadata);
+}
+
 export {
   getGoogleCloudStorageURI,
   getReadStream,
   getWriteStream,
+  setMetadata,
 };

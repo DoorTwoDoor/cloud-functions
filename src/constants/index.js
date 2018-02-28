@@ -15,15 +15,19 @@
  */
 
 import {
+  BLUR_FACTOR,
   IMAGE_CONTENT_TYPE,
-  RESOURCE_STATES,
   THUMBNAIL_METADATA,
+} from './imageDataTypes';
+import {
+  RESOURCE_STATES,
   URI_SCHEME,
 } from './googleCloudStorageDataTypes';
 
 import { LIKELIHOODS } from './googleCloudVisionDataTypes';
 
 export {
+  BLUR_FACTOR,
   IMAGE_CONTENT_TYPE,
   LIKELIHOODS,
   RESOURCE_STATES,

@@ -15,16 +15,6 @@
  */
 
 /**
- * Stores the content type for images.
- *
- * @constant
- * @default
- * @memberof GoogleCloudStorageDataTypes
- * @readonly
- */
-const IMAGE_CONTENT_TYPE = 'image/';
-
-/**
  * Stores the resource states for object creation, deletion, moves and updates.
  * 
  * @constant
@@ -38,29 +28,6 @@ const RESOURCE_STATES = {
 };
 
 /**
- * Stores the thumbnail metadata for large, medium and small thumbnails.
- * 
- * @constant
- * @default
- * @memberof GoogleCloudStorageDataTypes
- * @readonly 
- */
-const THUMBNAIL_METADATA = {
-  LARGE: {
-    size: { height: 200, width: 200 },
-    suffix: 'large',
-  },
-  MEDIUM: {
-    size: { height: 100, width: 100 },
-    suffix: 'medium',
-  },
-  SMALL: {
-    size: { height: 50, width: 50 },
-    suffix: 'small',
-  },
-};
-
-/**
  * Stores the URI scheme for Google Cloud Storage.
  * 
  * @constant
@@ -71,8 +38,6 @@ const THUMBNAIL_METADATA = {
 const URI_SCHEME = 'gs';
 
 export {
-  IMAGE_CONTENT_TYPE,
   RESOURCE_STATES,
-  THUMBNAIL_METADATA,
   URI_SCHEME,
 };

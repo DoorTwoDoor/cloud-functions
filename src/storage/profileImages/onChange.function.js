@@ -14,6 +14,7 @@
  * @module ProfileImageProcessing
  */
 
+//import * as firebaseAdmin from 'firebase-admin';
 import * as firebaseFunctions from 'firebase-functions';
 
 import {
@@ -26,9 +27,11 @@ import {
   getGoogleCloudStorageURI,
   isImage,
   isOffensiveImage,
-  isThumbnail,
+  markImageAsModerated,
   moderateImage,
 } from '../../utilities';
+
+//firebaseAdmin.initializeApp(firebaseFunctions.config().firebase);
 
 /**
  * Handles a Google Cloud Storage change event.
@@ -51,14 +54,10 @@ async function handleChangeEvent({
     if (!isImage(contentType)) { // Is object not an image?
       return;
     }
-  
-    // Stores the file name of the image.
-    const fileName = getFileName({
-      filePath,
-      includeFileExtension: false,
-    });
-    
-    if (isThumbnail(fileName)) { // Is image already a thumbnail?
+
+    const { isModerated = false } = metadata;
+
+    if (isModerated) { // Is image already moderated?
       return;
     }
   
@@ -83,10 +82,14 @@ async function handleChangeEvent({
       filePath,
     });
         
-    // Stores whether the image contains offensive content and should be moderated. 
-    const shouldModerate = await isOffensiveImage(googleCloudStorageURI);
+    /*
+     * Stores whether the image contains offensive content and should
+     * be moderated. 
+     */
+    const containsOffensiveContent =
+      await isOffensiveImage(googleCloudStorageURI);
 
-    if (shouldModerate) { // Should moderate the image?
+    if (containsOffensiveContent) { // Image contains offensive content?
       // Moderates the image.
       await moderateImage({
         bucketName,
@@ -94,15 +97,27 @@ async function handleChangeEvent({
         filePath,
         metadata,
       });
+    } else {
+      // Marks the image as moderated.
+      await markImageAsModerated({
+        bucketName,
+        contentType,
+        filePath,
+        metadata,
+      });
     }
   
-    // Generates thumbnails and blurs them if necessary.
+    // Generates thumbnails.
     await generateThumbnails({
-      filePath,
       bucketName,
       contentType,
+      filePath,
       metadata,
     });
+
+    return;
+
+    //firebaseAdmin.auth().updateUser(uid, { photoURL: "" });
   
   } catch (error) {
     
@@ -120,8 +135,7 @@ async function handleChangeEvent({
  * @public
  * @readonly
  */
-const processProfileImage = 
-  firebaseFunctions
+const processProfileImage = firebaseFunctions
   .storage
   .object()
   .onChange(event => handleChangeEvent(event));

@@ -15,6 +15,7 @@
  */
 
 import {
+  BLUR_FACTOR,
   IMAGE_CONTENT_TYPE,
   LIKELIHOODS,
   THUMBNAIL_METADATA,
@@ -28,6 +29,7 @@ import {
   getThumbnailFileName,
   getWriteStream,
   joinPaths,
+  setMetadata,
 } from '.';
 
 import googleCloudVision from '@google-cloud/vision';
@@ -51,7 +53,7 @@ const imageAnnotatorClient = new googleCloudVision.ImageAnnotatorClient();
  */
 function blurImage(readableStream) {
   // Stores a writable stream to blur an image.
-  const writableStream = sharp().blur();
+  const writableStream = sharp().blur(BLUR_FACTOR);
 
   return readableStream.pipe(writableStream);
 }
@@ -139,7 +141,10 @@ function generateThumbnails({
     const options = {
       metadata: {
         contentType,
-        metadata,
+        metadata: {
+          ...metadata,
+          isModerated: true,
+        },
       },
     };
 
@@ -193,8 +198,8 @@ async function isOffensiveImage(image) {
     // Stores the annotate image response.
     const [ annotateImageResponse ] = await getSafeSearchAnnotation(image);
 
-    // Destructures the very likely property from the likelihoods.
-    const { VERY_LIKELY } = LIKELIHOODS;
+    // Destructures the likely property from the likelihoods.
+    const { LIKELY } = LIKELIHOODS;
     
     /*
      * Destructures the safe-search annotation property from the annotate
@@ -207,7 +212,7 @@ async function isOffensiveImage(image) {
       },
     } = annotateImageResponse;
 
-    return (adult === VERY_LIKELY) || (violence === VERY_LIKELY);
+    return (LIKELIHOODS[adult] >= LIKELY || LIKELIHOODS[violence] >= LIKELY);
 
   } catch (error) {
     
@@ -218,31 +223,37 @@ async function isOffensiveImage(image) {
 /* eslint-enable consistent-return */
 
 /**
- * Checks if a file is a thumbnail.
+ * Updates an image's metadata to indicate that it is already moderated.
  * 
  * @memberof Images
  * @public
  */
-function isThumbnail(fileName) {
-  /*
-   * Destructures the large, medium and small thumbnail suffix properties
-   * from the thumbnail metadata.
-   */
-  const {
-    LARGE: { suffix: LARGE_THUMBNAIL_SUFFIX },
-    MEDIUM: { suffix: MEDIUM_THUMBNAIL_SUFFIX },
-    SMALL: { suffix: SMALL_THUMBNAIL_SUFFIX },
-  } = THUMBNAIL_METADATA;
+function markImageAsModerated({
+  bucketName,
+  contentType,
+  filePath,
+  metadata,
+}) {
+  // Stores the configuration options.
+  const options = {
+    metadata: {
+      contentType,
+      metadata: {
+        ...metadata,
+        isModerated: true,
+      },
+    },
+  };
 
-  return (
-    fileName.endsWith(LARGE_THUMBNAIL_SUFFIX) ||
-    fileName.endsWith(MEDIUM_THUMBNAIL_SUFFIX) ||
-    fileName.endsWith(SMALL_THUMBNAIL_SUFFIX)
-  );
+  return setMetadata({
+    bucketName,
+    filePath,
+    metadata: options,
+  });
 }
 
 /**
- * Moderates an image if 
+ * Moderates an image.
  * 
  * @memberof Images
  * @public
@@ -266,7 +277,10 @@ function moderateImage({
   const options = {
     metadata: {
       contentType,
-      metadata,
+      metadata: {
+        ...metadata,
+        isModerated: true,
+      },
     },
   };
 
@@ -287,6 +301,6 @@ export {
   generateThumbnails,
   isImage,
   isOffensiveImage,
-  isThumbnail,
+  markImageAsModerated,
   moderateImage,
 };

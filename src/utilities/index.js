@@ -27,13 +27,14 @@ import {
   generateThumbnails,
   isImage,
   isOffensiveImage,
-  isThumbnail,
+  markImageAsModerated,
   moderateImage,
 } from './images';
 import {
   getGoogleCloudStorageURI,
   getReadStream,
   getWriteStream,
+  setMetadata,
 } from './googleCloudStorage';
 
 import { getPromiseFromWritableStream } from './streams';
@@ -52,7 +53,8 @@ export {
   getWriteStream,
   isImage,
   isOffensiveImage,
-  isThumbnail,
   joinPaths,
+  markImageAsModerated,
   moderateImage,
+  setMetadata,
 };
