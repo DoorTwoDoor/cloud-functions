@@ -22,7 +22,7 @@
  * @memberof ImageDataTypes
  * @readonly
  */
-const BLUR_FACTOR = 8;
+const BLUR_FACTOR = 10;
 
 /**
  * Stores the content type for images.

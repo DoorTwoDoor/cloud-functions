@@ -14,7 +14,10 @@
  * @module FileSystem
  */
 
+import { NODE_MODULES_FILE_PATH } from '../constants';
+import camelCase from 'camelcase';
 import fs from 'fs';
+import glob from 'glob';
 import os from 'os';
 import path from 'path';
 
@@ -69,6 +72,32 @@ function getFileName({
 }
 
 /**
+ * Gets the function name corresponding to the file path.
+ * 
+ * @memberof FileSystem
+ * @public
+ */
+function getFunctionNameFromFilePath(filePath) {
+  return camelCase(filePath.slice(0, -12).split('/').join('-'));
+}
+
+/**
+ * Gets the file paths found matching the pattern.
+ * 
+ * @memberof FileSystem
+ * @public
+ */
+function getMatchingFilePaths(pattern) {
+  // Stores the options for pattern matching behaviour.
+  const options = {
+    cwd: __dirname,
+    ignore: NODE_MODULES_FILE_PATH,
+  };
+  
+  return glob.sync(pattern, options);
+}
+
+/**
  * Gets the file path of the temporary file.
  * 
  * @memberof FileSystem
@@ -107,6 +136,8 @@ export {
   getDirectoryName,
   getExtensionName,
   getFileName,
+  getFunctionNameFromFilePath,
+  getMatchingFilePaths,
   getTemporaryFilePath,
   getThumbnailFileName,
   joinPaths,

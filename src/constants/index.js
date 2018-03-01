@@ -20,6 +20,10 @@ import {
   THUMBNAIL_METADATA,
 } from './imageDataTypes';
 import {
+  CLOUD_FUNCTIONS_FILE_PATH,
+  NODE_MODULES_FILE_PATH,
+} from './fileSystemDataTypes';
+import {
   RESOURCE_STATES,
   URI_SCHEME,
 } from './googleCloudStorageDataTypes';
@@ -28,8 +32,10 @@ import { LIKELIHOODS } from './googleCloudVisionDataTypes';
 
 export {
   BLUR_FACTOR,
+  CLOUD_FUNCTIONS_FILE_PATH,
   IMAGE_CONTENT_TYPE,
   LIKELIHOODS,
+  NODE_MODULES_FILE_PATH,
   RESOURCE_STATES,
   THUMBNAIL_METADATA,
   URI_SCHEME,

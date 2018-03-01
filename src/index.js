@@ -14,27 +14,12 @@
  * @module CloudFunctions
  */
 
-import camelCase from 'camelcase';
-import glob from 'glob';
+import {
+  getFunctionNameFromFilePath,
+  getMatchingFilePaths,
+} from './utilities';
 
-/**
- * Gets the filenames found matching the pattern.
- * 
- * @memberof CloudFunctions
- * @private
- */
-function getFilenames() {
-  // Stores the pattern to be matched.
-  const pattern = './**/*.function.js';
-  
-  // Stores the options for pattern matching behaviour.
-  const options = {
-    cwd: __dirname,
-    ignore: './node_modules/**',
-  };
-  
-  return glob.sync(pattern, options);
-}
+import { CLOUD_FUNCTIONS_FILE_PATH } from './constants';
 
 /**
  * Exports the function names corresponding to the filenames found matching
@@ -45,18 +30,18 @@ function getFilenames() {
  */
 function exportFunctionNames() {
   // Stores the filenames found matching the pattern.
-  const filenames = getFilenames();
+  const filePaths = getMatchingFilePaths(CLOUD_FUNCTIONS_FILE_PATH);
 
-  for (const filename of filenames) {
+  for (const filePath of filePaths) {
     /*
-     * Stores the function name corresponding to the filename found matching
+     * Stores the function name corresponding to the file path found matching
      * the pattern.
      */
-    const functionName = camelCase(filename.slice(0, -12).split('/').join('-'));
+    const functionName = getFunctionNameFromFilePath(filePath);
 
     if (!process.env.FUNCTION_NAME ||
         process.env.FUNCTION_NAME === functionName) {
-      exports[functionName] = require(filename).default;
+      exports[functionName] = require(filePath).default;
     }
   }
 }
