@@ -14,7 +14,7 @@
  * @module ProfileImageProcessing
  */
 
-import * as firebaseAdmin from 'firebase-admin';
+// import * as firebaseAdmin from 'firebase-admin';
 import * as firebaseFunctions from 'firebase-functions';
 
 import {
@@ -31,7 +31,7 @@ import {
   moderateImage,
 } from '../../utilities';
 
-firebaseAdmin.initializeApp(firebaseFunctions.config().firebase);
+// firebaseAdmin.initializeApp(firebaseFunctions.config().firebase);
 
 /**
  * Handles a Google Cloud Storage change event.
@@ -117,7 +117,7 @@ async function handleChangeEvent({
 
     return;
 
-    //firebaseAdmin.auth().updateUser(uid, { photoURL: "" });
+    // firebaseAdmin.auth().updateUser(uid, { photoURL: "" });
   
   } catch (error) {
     

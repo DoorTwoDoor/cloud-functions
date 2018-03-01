@@ -15,11 +15,13 @@
  */
 
 import {
+  CLOUD_FUNCTIONS_FILE_PATH,
+  NODE_MODULES_FILE_PATH,
+} from './constants';
+import {
   getFunctionNameFromFilePath,
   getMatchingFilePaths,
 } from './utilities';
-
-import { CLOUD_FUNCTIONS_FILE_PATH } from './constants';
 
 /**
  * Exports the function names corresponding to the filenames found matching
@@ -30,7 +32,11 @@ import { CLOUD_FUNCTIONS_FILE_PATH } from './constants';
  */
 function exportFunctionNames() {
   // Stores the filenames found matching the pattern.
-  const filePaths = getMatchingFilePaths(CLOUD_FUNCTIONS_FILE_PATH);
+  const filePaths = getMatchingFilePaths({
+    cwd: __dirname,
+    ignore: NODE_MODULES_FILE_PATH,
+    pattern: CLOUD_FUNCTIONS_FILE_PATH,
+  });
 
   for (const filePath of filePaths) {
     /*

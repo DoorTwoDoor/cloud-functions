@@ -14,7 +14,6 @@
  * @module FileSystem
  */
 
-import { NODE_MODULES_FILE_PATH } from '../constants';
 import camelCase from 'camelcase';
 import fs from 'fs';
 import glob from 'glob';
@@ -87,11 +86,15 @@ function getFunctionNameFromFilePath(filePath) {
  * @memberof FileSystem
  * @public
  */
-function getMatchingFilePaths(pattern) {
+function getMatchingFilePaths({
+  cwd,
+  ignore,
+  pattern,
+}) {
   // Stores the options for pattern matching behaviour.
   const options = {
-    cwd: __dirname,
-    ignore: NODE_MODULES_FILE_PATH,
+    cwd,
+    ignore,
   };
   
   return glob.sync(pattern, options);
