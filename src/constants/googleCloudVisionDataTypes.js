@@ -20,6 +20,7 @@
  * @constant
  * @default
  * @memberof GoogleCloudVisionDataTypes
+ * @public
  * @readonly
  */
 const LIKELIHOODS = {

@@ -31,12 +31,22 @@ function deleteFile(filePath) {
 }
 
 /**
- * Gets the directory name of a file path.
+ * Gets the base name of a file path.
  * 
  * @memberof FileSystem
  * @public
  */
-function getDirectoryName(filePath) {
+function getBaseName(filePath) {
+  return path.basename(filePath);
+}
+
+/**
+ * Gets the directory path of a file path.
+ * 
+ * @memberof FileSystem
+ * @public
+ */
+function getDirectoryPath(filePath) {
   return path.dirname(filePath);
 }
 
@@ -61,11 +71,11 @@ function getFileName({
   includeFileExtension,
 }) {
   if (includeFileExtension) {
-    return path.basename(filePath);
+    return getBaseName(filePath);
   }
   
   // Stores the file name of the file path.
-  const [ fileName ] = path.basename(filePath).split('.');
+  const [ fileName ] = getBaseName(filePath).split('.');
 
   return fileName;
 }
@@ -101,13 +111,26 @@ function getMatchingFilePaths({
 }
 
 /**
+ * Gets the parent directory name of a file path.
+ * 
+ * @memberof FileSystem
+ * @public
+ */
+function getParentDirectoryName(filePath) {
+  // Stores the directory path of the file path.
+  const directoryPath = getDirectoryPath(filePath);
+
+  return getBaseName(directoryPath);
+}
+
+/**
  * Gets the file path of the temporary file.
  * 
  * @memberof FileSystem
  * @public
  */
 function getTemporaryFilePath(filePath) {
-  return joinPaths([os.tempdir(), filePath]);
+  return joinPaths([ os.tempdir(), filePath ]);
 }
 
 /**
@@ -136,11 +159,13 @@ function joinPaths(paths) {
 
 export {
   deleteFile,
-  getDirectoryName,
+  getBaseName,
+  getDirectoryPath,
   getExtensionName,
   getFileName,
   getFunctionNameFromFilePath,
   getMatchingFilePaths,
+  getParentDirectoryName,
   getTemporaryFilePath,
   getThumbnailFileName,
   joinPaths,

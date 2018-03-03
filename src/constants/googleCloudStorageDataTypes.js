@@ -15,11 +15,23 @@
  */
 
 /**
+ * Stores the download URL base.
+ * 
+ * @constant
+ * @default
+ * @memberof GoogleCloudStorageDataTypes
+ * @public
+ * @readonly
+ */
+const DOWNLOAD_URL_BASE = 'https://firebasestorage.googleapis.com/v0/b';
+
+/**
  * Stores the resource states for object creation, deletion, moves and updates.
  * 
  * @constant
  * @default
  * @memberof GoogleCloudStorageDataTypes
+ * @public
  * @readonly
  */
 const RESOURCE_STATES = {
@@ -33,11 +45,13 @@ const RESOURCE_STATES = {
  * @constant
  * @default
  * @memberof GoogleCloudStorageDataTypes
+ * @public
  * @readonly
  */
 const URI_SCHEME = 'gs';
 
 export {
+  DOWNLOAD_URL_BASE,
   RESOURCE_STATES,
   URI_SCHEME,
 };

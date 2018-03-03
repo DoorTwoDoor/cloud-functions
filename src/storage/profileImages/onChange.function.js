@@ -14,7 +14,6 @@
  * @module ProfileImageProcessing
  */
 
-// import * as firebaseAdmin from 'firebase-admin';
 import * as firebaseFunctions from 'firebase-functions';
 
 import {
@@ -29,9 +28,8 @@ import {
   isOffensiveImage,
   markImageAsModerated,
   moderateImage,
+  updatePhotoURLForUser,
 } from '../../utilities';
-
-// firebaseAdmin.initializeApp(firebaseFunctions.config().firebase);
 
 /**
  * Handles a Google Cloud Storage change event.
@@ -115,9 +113,12 @@ async function handleChangeEvent({
       metadata,
     });
 
-    return;
+    await updatePhotoURLForUser({
+      bucketName,
+      filePath,
+    });
 
-    // firebaseAdmin.auth().updateUser(uid, { photoURL: "" });
+    return;
   
   } catch (error) {
     

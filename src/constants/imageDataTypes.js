@@ -20,6 +20,7 @@
  * @constant
  * @default
  * @memberof ImageDataTypes
+ * @public
  * @readonly
  */
 const BLUR_FACTOR = 10;
@@ -30,6 +31,7 @@ const BLUR_FACTOR = 10;
  * @constant
  * @default
  * @memberof ImageDataTypes
+ * @public
  * @readonly
  */
 const IMAGE_CONTENT_TYPE = 'image/';
@@ -40,6 +42,7 @@ const IMAGE_CONTENT_TYPE = 'image/';
  * @constant
  * @default
  * @memberof GoogleCloudStorageDataTypes
+ * @public
  * @readonly 
  */
 const THUMBNAIL_METADATA = {

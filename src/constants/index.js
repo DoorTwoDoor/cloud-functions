@@ -24,15 +24,19 @@ import {
   NODE_MODULES_FILE_PATH,
 } from './fileSystemDataTypes';
 import {
+  DOWNLOAD_URL_BASE,
   RESOURCE_STATES,
   URI_SCHEME,
 } from './googleCloudStorageDataTypes';
 
+import { FIREBASE_APP } from './firebaseAdmin';
 import { LIKELIHOODS } from './googleCloudVisionDataTypes';
 
 export {
   BLUR_FACTOR,
   CLOUD_FUNCTIONS_FILE_PATH,
+  DOWNLOAD_URL_BASE,
+  FIREBASE_APP,
   IMAGE_CONTENT_TYPE,
   LIKELIHOODS,
   NODE_MODULES_FILE_PATH,

@@ -16,11 +16,13 @@
 
 import {
   deleteFile,
-  getDirectoryName,
+  getBaseName,
+  getDirectoryPath,
   getExtensionName,
   getFileName,
   getFunctionNameFromFilePath,
   getMatchingFilePaths,
+  getParentDirectoryName,
   getTemporaryFilePath,
   getThumbnailFileName,
   joinPaths,
@@ -31,8 +33,10 @@ import {
   isOffensiveImage,
   markImageAsModerated,
   moderateImage,
+  updatePhotoURLForUser,
 } from './images';
 import {
+  getDownloadURL,
   getGoogleCloudStorageURI,
   getReadStream,
   getWriteStream,
@@ -40,16 +44,21 @@ import {
 } from './googleCloudStorage';
 
 import { getPromiseFromWritableStream } from './streams';
+import { update } from './cloudFirestore';
+import { updateUser } from './authentication';
 
 export {
   deleteFile,
   generateThumbnails,
-  getDirectoryName,
+  getBaseName,
+  getDirectoryPath,
+  getDownloadURL,
   getExtensionName,
   getFileName,
   getFunctionNameFromFilePath,
   getGoogleCloudStorageURI,
   getMatchingFilePaths,
+  getParentDirectoryName,
   getPromiseFromWritableStream,
   getReadStream,
   getTemporaryFilePath,
@@ -61,4 +70,7 @@ export {
   markImageAsModerated,
   moderateImage,
   setMetadata,
+  update,
+  updatePhotoURLForUser,
+  updateUser,
 };

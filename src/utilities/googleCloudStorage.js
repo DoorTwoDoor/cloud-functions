@@ -14,7 +14,11 @@
  * @module GoogleCloudStorage
  */
 
-import { URI_SCHEME } from '../constants';
+import {
+  DOWNLOAD_URL_BASE,
+  URI_SCHEME,
+} from '../constants';
+
 import googleCloudStorage from '@google-cloud/storage';
 
 /**
@@ -26,6 +30,18 @@ import googleCloudStorage from '@google-cloud/storage';
  * @readonly
  */
 const storageClient = googleCloudStorage();
+
+/**
+ * Gets the download URL for the given file in the given bucket.
+ */
+function getDownloadURL({
+  bucketName,
+  filePath,
+}) {
+  const encodedFilePath = encodeURIComponent(filePath);
+  
+  return `${DOWNLOAD_URL_BASE}/${bucketName}/o/${encodedFilePath}?alt=media`;
+}
 
 /**
  * Gets the Google Cloud Storage URI to the given file in the given bucket.
@@ -92,6 +108,7 @@ function setMetadata({
 }
 
 export {
+  getDownloadURL,
   getGoogleCloudStorageURI,
   getReadStream,
   getWriteStream,

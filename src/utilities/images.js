@@ -21,15 +21,19 @@ import {
   THUMBNAIL_METADATA,
 } from '../constants';
 import {
-  getDirectoryName,
+  getDirectoryPath,
+  getDownloadURL,
   getExtensionName,
   getFileName,
+  getParentDirectoryName,
   getPromiseFromWritableStream,
   getReadStream,
   getThumbnailFileName,
   getWriteStream,
   joinPaths,
   setMetadata,
+  update,
+  updateUser,
 } from '.';
 
 import googleCloudVision from '@google-cloud/vision';
@@ -92,8 +96,8 @@ function generateThumbnails({
   filePath,
   metadata,
 }) {
-  // Stores the directory name of the image.
-  const directoryName = getDirectoryName(filePath);
+  // Stores the directory path of the image.
+  const directoryPath = getDirectoryPath(filePath);
 
   // Stores the extension name of the image.
   const extensionName = getExtensionName(filePath);
@@ -135,7 +139,7 @@ function generateThumbnails({
     });
     
     // Stores the thumbnail file path.
-    const thumbnailFilePath = joinPaths([ directoryName, thumbnailFileName ]);
+    const thumbnailFilePath = joinPaths([ directoryPath, thumbnailFileName ]);
     
     // Stores the configuration options.
     const options = {
@@ -297,10 +301,49 @@ function moderateImage({
   return getPromiseFromWritableStream(imageUploadStream);
 }
 
+/**
+ * Updates the photo URL for a user.
+ * 
+ * @memberof Images
+ * @public
+ */
+function updatePhotoURLForUser({
+  bucketName,
+  filePath,
+}) {
+  // Stores the user's ID.
+  const userID = getParentDirectoryName(filePath);
+
+  // Store the photo URL.
+  const photoURL = getDownloadURL({
+    bucketName,
+    filePath,
+  });
+
+  // Stores the array of promises.
+  const promises = [
+    // Updates the photo URL for the user in Authentication.
+    updateUser({
+      userID,
+      value: { photoURL },
+    }),
+    
+    // Updates the photo URL for the user in Firestore.
+    update({
+      collectionPath: 'users',
+      documentPath: userID,
+      value: { photoURL },
+    }),
+  ];
+
+  return Promise.all(promises);
+}
+
 export {
   generateThumbnails,
   isImage,
   isOffensiveImage,
   markImageAsModerated,
   moderateImage,
+  updatePhotoURLForUser,
 };

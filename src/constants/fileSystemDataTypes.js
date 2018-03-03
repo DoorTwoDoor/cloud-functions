@@ -20,6 +20,7 @@
  * @constant
  * @default
  * @memberof FileSystemDataTypes
+ * @public
  * @readonly
  */
 const CLOUD_FUNCTIONS_FILE_PATH = './**/*.function.js';
@@ -30,6 +31,7 @@ const CLOUD_FUNCTIONS_FILE_PATH = './**/*.function.js';
  * @constant
  * @default
  * @memberof FileSystemDataTypes
+ * @public
  * @readonly
  */
 const NODE_MODULES_FILE_PATH = './node_modules/**';
