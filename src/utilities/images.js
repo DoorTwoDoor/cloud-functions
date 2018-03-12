@@ -16,6 +16,7 @@
 
 import {
   BLUR_FACTOR,
+  COLLECTION_PATHS,
   IMAGE_CONTENT_TYPE,
   LIKELIHOODS,
   THUMBNAIL_METADATA,
@@ -31,8 +32,8 @@ import {
   getThumbnailFileName,
   getWriteStream,
   joinPaths,
+  set,
   setMetadata,
-  update,
   updateUser,
 } from '.';
 
@@ -310,9 +311,10 @@ function moderateImage({
 function updatePhotoURLForUser({
   bucketName,
   filePath,
+  userID,
 }) {
   // Stores the user's ID.
-  const userID = getParentDirectoryName(filePath);
+  const uid = userID? userID: getParentDirectoryName(filePath);
 
   // Store the photo URL.
   const photoURL = getDownloadURL({
@@ -320,18 +322,20 @@ function updatePhotoURLForUser({
     filePath,
   });
 
+  // Destructures the users property from the collection paths.
+  const { USERS } = COLLECTION_PATHS;
+
   // Stores the array of promises.
   const promises = [
     // Updates the photo URL for the user in Authentication.
     updateUser({
-      userID,
+      userID: uid,
       value: { photoURL },
     }),
-    
-    // Updates the photo URL for the user in Firestore.
-    update({
-      collectionPath: 'users',
-      documentPath: userID,
+    // Sets the photo URL for the user in Firestore.
+    set({
+      collectionPath: USERS,
+      documentPath: uid,
       value: { photoURL },
     }),
   ];

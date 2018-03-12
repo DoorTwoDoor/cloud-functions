@@ -16,23 +16,47 @@
 
 import {
   DOWNLOAD_URL_BASE,
+  FIREBASE_APP,
   URI_SCHEME,
 } from '../constants';
 
 import googleCloudStorage from '@google-cloud/storage';
 
 /**
- * Stores the storage client.
+ * Stores the Google Cloud Storage client.
  * 
  * @constant
  * @memberof GoogleCloudStorage
  * @private
  * @readonly
  */
-const storageClient = googleCloudStorage();
+const googleCloudStorageClient = googleCloudStorage();
+
+/**
+ * Stores the Firebase Cloud Storage client.
+ * 
+ * @constant
+ * @memberof GoogleCloudStorage
+ * @private
+ * @readonly
+ */
+const firebaseCloudStorageClient = FIREBASE_APP.storage();
+
+/**
+ * Gets the name of the default bucket.
+ * 
+ * @memberof GoogleCloudStorage
+ * @public
+ */
+function getDefaultBucketName() {
+  return firebaseCloudStorageClient.bucket().name;
+}
 
 /**
  * Gets the download URL for the given file in the given bucket.
+ * 
+ * @memberof GoogleCloudStorage
+ * @public
  */
 function getDownloadURL({
   bucketName,
@@ -67,7 +91,7 @@ function getReadStream({
   filePath,
   options,
 }) {
-  return storageClient
+  return googleCloudStorageClient
     .bucket(bucketName)
     .file(filePath)
     .createReadStream(options);
@@ -84,7 +108,7 @@ function getWriteStream({
   filePath,
   options,
 }) {
-  return storageClient
+  return googleCloudStorageClient
     .bucket(bucketName)
     .file(filePath)
     .createWriteStream(options);
@@ -101,13 +125,14 @@ function setMetadata({
   filePath,
   metadata,
 }) {
-  return storageClient
+  return googleCloudStorageClient
     .bucket(bucketName)
     .file(filePath)
     .setMetadata(metadata);
 }
 
 export {
+  getDefaultBucketName,
   getDownloadURL,
   getGoogleCloudStorageURI,
   getReadStream,

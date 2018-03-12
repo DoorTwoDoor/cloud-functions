@@ -15,6 +15,17 @@
  */
 
 /**
+ * Stores the file path of the default profile image.
+ * 
+ * @constant
+ * @default
+ * @memberof GoogleCloudStorageDataTypes
+ * @public
+ * @readonly
+ */
+const DEFAULT_PROFILE_IMAGE_FILE_PATH = 'profileImages/default/ryRuAE5Oz.jpg';
+
+/**
  * Stores the download URL base.
  * 
  * @constant
@@ -51,6 +62,7 @@ const RESOURCE_STATES = {
 const URI_SCHEME = 'gs';
 
 export {
+  DEFAULT_PROFILE_IMAGE_FILE_PATH,
   DOWNLOAD_URL_BASE,
   RESOURCE_STATES,
   URI_SCHEME,

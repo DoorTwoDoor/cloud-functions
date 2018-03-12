@@ -53,13 +53,24 @@ async function handleChangeEvent({
       return;
     }
 
+    /*
+     * Destructures the is moderated property from the metadata and sets it to
+     * false if it is undefined.
+     */
     const { isModerated = false } = metadata;
 
     if (isModerated) { // Is image already moderated?
       return;
     }
+
+    if (!filePath.startsWith('profileImages')) { // Is image not a profile image?
+      return;
+    }
   
-    // Destructures the object deletion and moves property from the resource state
+    /*
+     * Destructures the object deletion and moves property from the
+     * resource state.
+     */
     const {
       OBJECT_CREATION_AND_UPDATES,
       OBJECT_DELETION_AND_MOVES,
@@ -70,7 +81,7 @@ async function handleChangeEvent({
     }
   
     if (resourceState === OBJECT_CREATION_AND_UPDATES &&
-        metageneration > 1) { // Is object new?
+        metageneration > 1) { // Is object not new?
       return;
     }
 
@@ -113,6 +124,7 @@ async function handleChangeEvent({
       metadata,
     });
 
+    // Updates the photo URL for the user.
     await updatePhotoURLForUser({
       bucketName,
       filePath,

@@ -27,20 +27,42 @@ import { FIREBASE_APP } from '../constants';
 const firestoreClient = FIREBASE_APP.firestore();
 
 /**
- * Updates fields in the document within the collection.
+ * Removes the document within the collection.
  * 
  * @memberof CloudFirestore
  * @public
  */
-function update({
+function remove({
   collectionPath,
   documentPath,
-  value,
 }) {
   return firestoreClient
     .collection(collectionPath)
     .doc(documentPath)
-    .update(value);
+    .delete();
 }
 
-export { update };
+/**
+ * Sets fields in the document within the collection.
+ * 
+ * @memberof CloudFirestore
+ * @public
+ */
+function set({
+  collectionPath,
+  documentPath,
+  value,
+}) {
+  // Stores the configuration options.
+  const options = { merge: true };
+
+  return firestoreClient
+    .collection(collectionPath)
+    .doc(documentPath)
+    .set(value, options);
+}
+
+export {
+  remove,
+  set,
+};

@@ -15,6 +15,11 @@
  */
 
 import {
+  createUserInFirestore,
+  deleteUserFromFirestore,
+  updateUser,
+} from './authentication';
+import {
   deleteFile,
   getBaseName,
   getDirectoryPath,
@@ -36,21 +41,28 @@ import {
   updatePhotoURLForUser,
 } from './images';
 import {
+  getDefaultBucketName,
   getDownloadURL,
   getGoogleCloudStorageURI,
   getReadStream,
   getWriteStream,
   setMetadata,
 } from './googleCloudStorage';
+import {
+  remove,
+  set,
+} from './cloudFirestore';
 
 import { getPromiseFromWritableStream } from './streams';
-import { update } from './cloudFirestore';
-import { updateUser } from './authentication';
+import { getTimestampFromUTCTime } from './dateTime';
 
 export {
+  createUserInFirestore,
   deleteFile,
+  deleteUserFromFirestore,
   generateThumbnails,
   getBaseName,
+  getDefaultBucketName,
   getDirectoryPath,
   getDownloadURL,
   getExtensionName,
@@ -63,14 +75,16 @@ export {
   getReadStream,
   getTemporaryFilePath,
   getThumbnailFileName,
+  getTimestampFromUTCTime,
   getWriteStream,
   isImage,
   isOffensiveImage,
   joinPaths,
   markImageAsModerated,
   moderateImage,
+  remove,
+  set,
   setMetadata,
-  update,
   updatePhotoURLForUser,
   updateUser,
 };

@@ -23,7 +23,7 @@
  * @public
  * @readonly
  */
-const BLUR_FACTOR = 10;
+const BLUR_FACTOR = 15;
 
 /**
  * Stores the content type for images.

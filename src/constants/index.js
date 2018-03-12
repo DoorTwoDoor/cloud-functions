@@ -24,17 +24,22 @@ import {
   NODE_MODULES_FILE_PATH,
 } from './fileSystemDataTypes';
 import {
+  DEFAULT_PROFILE_IMAGE_FILE_PATH,
   DOWNLOAD_URL_BASE,
   RESOURCE_STATES,
   URI_SCHEME,
 } from './googleCloudStorageDataTypes';
 
+import { COLLECTION_PATHS } from './cloudFirestoreDataTypes';
 import { FIREBASE_APP } from './firebaseAdmin';
 import { LIKELIHOODS } from './googleCloudVisionDataTypes';
+import { UNITS } from './dateTimeDataTypes';
 
 export {
   BLUR_FACTOR,
   CLOUD_FUNCTIONS_FILE_PATH,
+  COLLECTION_PATHS,
+  DEFAULT_PROFILE_IMAGE_FILE_PATH,
   DOWNLOAD_URL_BASE,
   FIREBASE_APP,
   IMAGE_CONTENT_TYPE,
@@ -42,5 +47,6 @@ export {
   NODE_MODULES_FILE_PATH,
   RESOURCE_STATES,
   THUMBNAIL_METADATA,
+  UNITS,
   URI_SCHEME,
 };

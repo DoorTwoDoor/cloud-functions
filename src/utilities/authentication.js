@@ -14,7 +14,15 @@
  * @module Authentication
  */
 
-import { FIREBASE_APP } from '../constants';
+import {
+  COLLECTION_PATHS,
+  FIREBASE_APP,
+} from '../constants';
+import {
+  getTimestampFromUTCTime,
+  remove,
+  set,
+} from '.';
 
 /**
  * Stores the authentication client.
@@ -25,6 +33,54 @@ import { FIREBASE_APP } from '../constants';
  * @readonly
  */
 const authenticationClient = FIREBASE_APP.auth();
+
+/**
+ * Creates a user in Firestore.
+ * 
+ * @memberof Authentication
+ * @public
+ */
+function createUserInFirestore({
+  creationTime,
+  displayName,
+  photoURL,
+  userID,
+}) {
+  // Destructures the users property from the collection paths.
+  const { USERS } = COLLECTION_PATHS;
+
+  // Stores the creation timestamp converted from the creation time.
+  const creationTimestamp = getTimestampFromUTCTime({ time: creationTime });
+  
+  // Sets the fields for the user in Firestore.
+  return set({
+    collectionPath: USERS,
+    documentPath: userID,
+    value: {
+      creationTime: creationTimestamp,
+      ...(displayName && { displayName }),
+      moves: 0,
+      ...(photoURL && { photoURL }),
+      rating: 0,
+    },
+  });
+}
+
+/**
+ * Deletes a user from Firestore.
+ * 
+ * @memberof Authentication
+ * @public
+ */
+function deleteUserFromFirestore(userID) {
+  // Destructures the users property from the collection paths.
+  const { USERS } = COLLECTION_PATHS;
+  
+  return remove({
+    collectionPath: USERS,
+    documentPath: userID,
+  });
+}
 
 /**
  * Updates an existing user.
@@ -39,4 +95,8 @@ function updateUser({
   return authenticationClient.updateUser(userID, value);
 }
 
-export { updateUser };
+export {
+  createUserInFirestore,
+  deleteUserFromFirestore,
+  updateUser,
+};
