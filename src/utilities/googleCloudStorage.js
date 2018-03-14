@@ -43,6 +43,25 @@ const googleCloudStorageClient = googleCloudStorage();
 const firebaseCloudStorageClient = FIREBASE_APP.storage();
 
 /**
+ * Iterates over the bucket's files and deleting each file.
+ * 
+ * NOTE: This function is considered a dangerous operation since calling it
+ *       without the query argument will delete all of the files in the
+ *       bucket. Please exercise discretion when using this function.
+ * 
+ * @memberof GoogleCloudStorage
+ * @public
+ */
+function deleteFiles({
+  bucketName,
+  query,
+}) {
+  return googleCloudStorageClient
+    .bucket(bucketName)
+    .deleteFiles(query);
+}
+
+/**
  * Gets the name of the default bucket.
  * 
  * @memberof GoogleCloudStorage
@@ -132,6 +151,7 @@ function setMetadata({
 }
 
 export {
+  deleteFiles,
   getDefaultBucketName,
   getDownloadURL,
   getGoogleCloudStorageURI,

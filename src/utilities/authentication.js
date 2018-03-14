@@ -19,7 +19,7 @@ import {
   FIREBASE_APP,
 } from '../constants';
 import {
-  getTimestampFromUTCTime,
+  getISOStringFromUTCTime,
   remove,
   set,
 } from '.';
@@ -43,25 +43,35 @@ const authenticationClient = FIREBASE_APP.auth();
 function createUserInFirestore({
   creationTime,
   displayName,
-  photoURL,
+  profileImageURL,
   userID,
 }) {
   // Destructures the users property from the collection paths.
   const { USERS } = COLLECTION_PATHS;
 
-  // Stores the creation timestamp converted from the creation time.
-  const creationTimestamp = getTimestampFromUTCTime({ time: creationTime });
+  // Stores the creation time ISO string converted from the creation time.
+  const createdAt = getISOStringFromUTCTime(creationTime);
+
+  // Stores the names that split from the display name.
+  const names = displayName? splitDisplayName(displayName): {};
+
+  // Destructures the first and last name properties from the names.
+  const {
+    firstName,
+    lastName,
+  } = names;
   
   // Sets the fields for the user in Firestore.
   return set({
     collectionPath: USERS,
     documentPath: userID,
     value: {
-      creationTime: creationTimestamp,
-      ...(displayName && { displayName }),
-      moves: 0,
-      ...(photoURL && { photoURL }),
-      rating: 0,
+      createdAt,
+      ...(firstName && { firstName }),
+      ...(lastName && { lastName }),
+      movesCount: 0,
+      ...(profileImageURL && { profileImageURL }),
+      rating: 5,
     },
   });
 }
@@ -80,6 +90,24 @@ function deleteUserFromFirestore(userID) {
     collectionPath: USERS,
     documentPath: userID,
   });
+}
+
+/**
+ * Splits the display name into first and last names.
+ * 
+ * @memberof Authentication
+ * @private
+ */
+function splitDisplayName(displayName) {
+  const [
+    firstName,
+    lastName,
+  ] = displayName.split(' ');
+
+  return {
+    firstName,
+    lastName,
+  };
 }
 
 /**

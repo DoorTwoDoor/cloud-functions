@@ -19,7 +19,7 @@ import * as firebaseFunctions from 'firebase-functions';
 import {
   createUserInFirestore,
   getDefaultBucketName,
-  updatePhotoURLForUser,
+  updateProfileImageURLForUser,
 } from '../utilities';
 
 import { DEFAULT_PROFILE_IMAGE_FILE_PATH } from '../constants';
@@ -37,7 +37,7 @@ async function handleCreateEvent({
     metadata: {
       creationTime,
     },
-    photoURL,
+    photoURL: profileImageURL,
     uid: userID,
   },
 }) {
@@ -47,19 +47,19 @@ async function handleCreateEvent({
     await createUserInFirestore({
       creationTime,
       displayName,
-      photoURL,
+      profileImageURL,
       userID,
     });
     
-    if (photoURL) { // User has a profile image already?
+    if (profileImageURL) { // User has a profile image already?
       return;
     }
   
     // Stores the name of the default bucket.
     const bucketName = getDefaultBucketName();
-  
-    // Updates the photo URL for the user.
-    await updatePhotoURLForUser({
+
+    // Updates the profile image URL for the user.
+    await updateProfileImageURLForUser({
       bucketName,
       filePath: DEFAULT_PROFILE_IMAGE_FILE_PATH,
       userID,

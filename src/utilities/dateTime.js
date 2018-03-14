@@ -14,70 +14,21 @@
  * @module DateTime
  */
 
-import { UNITS } from '../constants';
+import { ISO_8601_FORMAT } from '../constants';
 import moment from 'moment';
 
 /**
- * Converts the timestamp from one unit to another unit.
- * 
- * @memberof DateTime
- * @private
- */
-function convertTimestampUnit({
-  inputUnit = UNITS.MILLISECONDS,
-  outputUnit = UNITS.SECONDS,
-  timestamp,
-}) {
-  // Destructures the milliseconds and seconds property from units.
-  const {
-    MILLISECONDS,
-    SECONDS,
-  } = UNITS;
-
-  if (
-    (inputUnit === MILLISECONDS) &&
-    (outputUnit === SECONDS)
-  ) { // Is from milliseconds to seconds?
-    
-    return moment(timestamp).unix();
-  
-  } else if (
-    (inputUnit === SECONDS) &&
-    (outputUnit === MILLISECONDS)
-  ) { // Is from seconds to milliseconds?
-    
-    return timestamp * 1000;
-  
-  } else {
-    
-    return timestamp;
-  
-  }
-}
-
-/**
- * Gets the UNIX timestamp from a UTC time in a particular unit.
+ * Gets the ISO string representation from the UTC time representation.
  * 
  * @memberof DateTime
  * @public
  */
-function getTimestampFromUTCTime({
-  time,
-  unit = UNITS.SECONDS,
-}) {
-  // Destructures the milliseconds property from units.
-  const { MILLISECONDS } = UNITS;
+function getISOStringFromUTCTime(time) {
+  const date = new Date(time);
   
-  // Stores the UNIX timestamp that is converted from a UTC time.
-  const timestamp = Date.parse(time);
-
-  switch (unit) {
-    case MILLISECONDS:
-      return timestamp;
-  
-    default:
-      return convertTimestampUnit({ timestamp });
-  }
+  return moment
+    .utc(date)
+    .format(ISO_8601_FORMAT);
 }
 
-export { getTimestampFromUTCTime };
+export { getISOStringFromUTCTime };

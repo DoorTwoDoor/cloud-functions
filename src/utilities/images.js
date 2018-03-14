@@ -17,8 +17,10 @@
 import {
   BLUR_FACTOR,
   COLLECTION_PATHS,
+  DEFAULT_PROFILE_IMAGE_FILE_PATH,
   IMAGE_CONTENT_TYPE,
   LIKELIHOODS,
+  PROFILE_IMAGES_DIRECTORY_NAME,
   THUMBNAIL_METADATA,
 } from '../constants';
 import {
@@ -180,6 +182,19 @@ function getSafeSearchAnnotation(image) {
 }
 
 /**
+ * Checks if a file is a default profile image.
+ * 
+ * @memberof Images
+ * @public
+ */
+function isDefaultProfileImage(filePath) {
+  // Stores the directory path of the file path.
+  const directoryPath = getDirectoryPath(DEFAULT_PROFILE_IMAGE_FILE_PATH);
+
+  return filePath.startsWith(directoryPath);
+}
+
+/**
  * Checks if a file is an image.
  * 
  * @memberof Images
@@ -187,6 +202,16 @@ function getSafeSearchAnnotation(image) {
  */
 function isImage(contentType) {
   return contentType.startsWith(IMAGE_CONTENT_TYPE);
+}
+
+/**
+ * Checks if a file is a profile image.
+ * 
+ * @memberof Images
+ * @public
+ */
+function isProfileImage(filePath) {
+  return filePath.startsWith(PROFILE_IMAGES_DIRECTORY_NAME);
 }
 
 /**
@@ -303,12 +328,12 @@ function moderateImage({
 }
 
 /**
- * Updates the photo URL for a user.
+ * Updates the profile image URL for a user.
  * 
  * @memberof Images
  * @public
  */
-function updatePhotoURLForUser({
+function updateProfileImageURLForUser({
   bucketName,
   filePath,
   userID,
@@ -316,8 +341,8 @@ function updatePhotoURLForUser({
   // Stores the user's ID.
   const uid = userID? userID: getParentDirectoryName(filePath);
 
-  // Store the photo URL.
-  const photoURL = getDownloadURL({
+  // Store the profile image URL.
+  const profileImageURL = getDownloadURL({
     bucketName,
     filePath,
   });
@@ -327,16 +352,16 @@ function updatePhotoURLForUser({
 
   // Stores the array of promises.
   const promises = [
-    // Updates the photo URL for the user in Authentication.
+    // Updates the profile image URL for the user in Authentication.
     updateUser({
       userID: uid,
-      value: { photoURL },
+      value: { photoURL: profileImageURL },
     }),
-    // Sets the photo URL for the user in Firestore.
+    // Sets the profile image URL for the user in Firestore.
     set({
       collectionPath: USERS,
       documentPath: uid,
-      value: { photoURL },
+      value: { profileImageURL },
     }),
   ];
 
@@ -345,9 +370,11 @@ function updatePhotoURLForUser({
 
 export {
   generateThumbnails,
+  isDefaultProfileImage,
   isImage,
   isOffensiveImage,
+  isProfileImage,
   markImageAsModerated,
   moderateImage,
-  updatePhotoURLForUser,
+  updateProfileImageURLForUser,
 };

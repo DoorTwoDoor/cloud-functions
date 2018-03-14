@@ -15,7 +15,7 @@
  */
 
 /**
- * Stores the units.
+ * Stores the ISO 8601 format.
  * 
  * @constant
  * @default
@@ -23,15 +23,6 @@
  * @public
  * @readonly
  */
-const UNITS = {
-  MILLISECONDS: 'milliseconds',
-  SECONDS: 'seconds',
-  MINUTES: 'minutes',
-  HOURS: 'hours',
-  DAYS: 'days',
-  WEEKS: 'weeks',
-  MONTHS: 'months',
-  YEARS: 'years',
-};
+const ISO_8601_FORMAT = 'YYYY-MM-DD[T]HH[:]mm[:]ss[Z]';
 
-export { UNITS };
+export { ISO_8601_FORMAT };

@@ -20,7 +20,25 @@ import {
   updateUser,
 } from './authentication';
 import {
-  deleteFile,
+  deleteFiles,
+  getDefaultBucketName,
+  getDownloadURL,
+  getGoogleCloudStorageURI,
+  getReadStream,
+  getWriteStream,
+  setMetadata,
+} from './googleCloudStorage';
+import {
+  generateThumbnails,
+  isDefaultProfileImage,
+  isImage,
+  isOffensiveImage,
+  isProfileImage,
+  markImageAsModerated,
+  moderateImage,
+  updateProfileImageURLForUser,
+} from './images';
+import {
   getBaseName,
   getDirectoryPath,
   getExtensionName,
@@ -33,32 +51,16 @@ import {
   joinPaths,
 } from './fileSystem';
 import {
-  generateThumbnails,
-  isImage,
-  isOffensiveImage,
-  markImageAsModerated,
-  moderateImage,
-  updatePhotoURLForUser,
-} from './images';
-import {
-  getDefaultBucketName,
-  getDownloadURL,
-  getGoogleCloudStorageURI,
-  getReadStream,
-  getWriteStream,
-  setMetadata,
-} from './googleCloudStorage';
-import {
   remove,
   set,
 } from './cloudFirestore';
 
+import { getISOStringFromUTCTime } from './dateTime';
 import { getPromiseFromWritableStream } from './streams';
-import { getTimestampFromUTCTime } from './dateTime';
 
 export {
   createUserInFirestore,
-  deleteFile,
+  deleteFiles,
   deleteUserFromFirestore,
   generateThumbnails,
   getBaseName,
@@ -69,22 +71,24 @@ export {
   getFileName,
   getFunctionNameFromFilePath,
   getGoogleCloudStorageURI,
+  getISOStringFromUTCTime,
   getMatchingFilePaths,
   getParentDirectoryName,
   getPromiseFromWritableStream,
   getReadStream,
   getTemporaryFilePath,
   getThumbnailFileName,
-  getTimestampFromUTCTime,
   getWriteStream,
+  isDefaultProfileImage,
   isImage,
   isOffensiveImage,
+  isProfileImage,
   joinPaths,
   markImageAsModerated,
   moderateImage,
   remove,
   set,
   setMetadata,
-  updatePhotoURLForUser,
+  updateProfileImageURLForUser,
   updateUser,
 };

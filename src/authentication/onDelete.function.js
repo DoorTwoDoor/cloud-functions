@@ -28,6 +28,8 @@ import { deleteUserFromFirestore } from '../utilities';
 async function handleDeleteEvent({ data: { uid: userID } }) {
   try {
 
+    // @TODO: Delete the user's profile images in Google Cloud storage.
+
     // Deletes the user from Firestore.
     await deleteUserFromFirestore(userID);
 

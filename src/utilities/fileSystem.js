@@ -15,20 +15,9 @@
  */
 
 import camelCase from 'camelcase';
-import fs from 'fs';
 import glob from 'glob';
 import os from 'os';
 import path from 'path';
-
-/**
- * Deletes a file with the given file path.
- * 
- * @memberof FileSystem
- * @public
- */
-function deleteFile(filePath) {
-  return fs.unlink(filePath);
-}
 
 /**
  * Gets the base name of a file path.
@@ -158,7 +147,6 @@ function joinPaths(paths) {
 }
 
 export {
-  deleteFile,
   getBaseName,
   getDirectoryPath,
   getExtensionName,

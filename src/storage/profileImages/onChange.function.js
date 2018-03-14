@@ -24,11 +24,13 @@ import {
   generateThumbnails,
   getFileName,
   getGoogleCloudStorageURI,
+  isDefaultProfileImage,
   isImage,
   isOffensiveImage,
+  isProfileImage,
   markImageAsModerated,
   moderateImage,
-  updatePhotoURLForUser,
+  updateProfileImageURLForUser,
 } from '../../utilities';
 
 /**
@@ -48,25 +50,7 @@ async function handleChangeEvent({
     resourceState,
   },
 }) {
-  try {    
-    if (!isImage(contentType)) { // Is object not an image?
-      return;
-    }
-
-    /*
-     * Destructures the is moderated property from the metadata and sets it to
-     * false if it is undefined.
-     */
-    const { isModerated = false } = metadata;
-
-    if (isModerated) { // Is image already moderated?
-      return;
-    }
-
-    if (!filePath.startsWith('profileImages')) { // Is image not a profile image?
-      return;
-    }
-  
+  try {
     /*
      * Destructures the object deletion and moves property from the
      * resource state.
@@ -82,6 +66,28 @@ async function handleChangeEvent({
   
     if (resourceState === OBJECT_CREATION_AND_UPDATES &&
         metageneration > 1) { // Is object not new?
+      return;
+    }
+
+    if (!isImage(contentType)) { // Is object not an image?
+      return;
+    }
+
+    if (!isProfileImage(filePath)) { // Is image not a profile image?
+      return;
+    }
+
+    if (isDefaultProfileImage(filePath)) { // Is image a default profile image?
+      return;
+    }
+
+    /*
+     * Destructures the is moderated property from the metadata and sets it to
+     * false if it is undefined.
+     */
+    const { isModerated = false } = metadata;
+
+    if (isModerated) { // Is image already moderated?
       return;
     }
 
@@ -124,8 +130,8 @@ async function handleChangeEvent({
       metadata,
     });
 
-    // Updates the photo URL for the user.
-    await updatePhotoURLForUser({
+    // Updates the profile image URL for the user.
+    await updateProfileImageURLForUser({
       bucketName,
       filePath,
     });
