@@ -14,3 +14,4 @@
  * @module UserCreation
  */
 
+import * as firebaseFunctions from 'firebase-functions';

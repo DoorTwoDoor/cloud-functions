@@ -19,7 +19,8 @@ import * as firebaseFunctions from 'firebase-functions';
 import {
   createUserInFirestore,
   getDefaultBucketName,
-  updateProfileImageURLForUser,
+  getDownloadURL,
+  updateUser,
 } from '../utilities';
 
 import { DEFAULT_PROFILE_IMAGE_FILE_PATH } from '../constants';
@@ -43,27 +44,39 @@ async function handleCreateEvent({
 }) {
   try {
 
-    // Creates the user in Firestore.
-    await createUserInFirestore({
-      creationTime,
-      displayName,
-      profileImageURL,
-      userID,
-    });
-    
-    if (profileImageURL) { // User has a profile image already?
-      return;
-    }
-  
     // Stores the name of the default bucket.
     const bucketName = getDefaultBucketName();
 
-    // Updates the profile image URL for the user.
-    await updateProfileImageURLForUser({
+    // Stores the default profile image URL.
+    const defaultProfileImageURL = getDownloadURL({
       bucketName,
       filePath: DEFAULT_PROFILE_IMAGE_FILE_PATH,
-      userID,
     });
+
+    // Stores the array of promises.
+    let promises = [
+      // Creates the user in Firestore.
+      createUserInFirestore({
+        creationTime,
+        displayName,
+        profileImageURL: profileImageURL || defaultProfileImageURL,
+        userID,
+      }),
+    ];
+
+    if (!profileImageURL) { // User has no profile image?
+      promises = [
+        ...promises,
+        // Updates the profile image URL for the user in Authentication.
+        updateUser({
+          userID,
+          value: { photoURL: defaultProfileImageURL },
+        }),
+      ];
+    }
+
+    // Executes user creation and profile image URL update in parallel.
+    await Promise.all(promises);
 
     return;
 

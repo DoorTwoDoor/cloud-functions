@@ -122,19 +122,24 @@ async function handleChangeEvent({
       });
     }
   
-    // Generates thumbnails.
-    await generateThumbnails({
-      bucketName,
-      contentType,
-      filePath,
-      metadata,
-    });
+    // Stores the array of promises.
+    const promises = [
+      // Generates thumbnails.
+      generateThumbnails({
+        bucketName,
+        contentType,
+        filePath,
+        metadata,
+      }),
+      // Updates the profile image URL for the user.
+      updateProfileImageURLForUser({
+        bucketName,
+        filePath,
+      }),
+    ];
 
-    // Updates the profile image URL for the user.
-    await updateProfileImageURLForUser({
-      bucketName,
-      filePath,
-    });
+    // Executes thumbnail generation and profile image URL update in parallel.
+    await Promise.all(promises);
 
     return;
   

@@ -24,6 +24,7 @@ import {
   THUMBNAIL_METADATA,
 } from '../constants';
 import {
+  deleteFiles,
   getDirectoryPath,
   getDownloadURL,
   getExtensionName,
@@ -63,6 +64,27 @@ function blurImage(readableStream) {
   const writableStream = sharp().blur(BLUR_FACTOR);
 
   return readableStream.pipe(writableStream);
+}
+
+/**
+ * Deletes the profile image for a user.
+ * 
+ * @memberof Images
+ * @public
+ */
+function deleteProfileImageForUser({
+  bucketName,
+  userID,
+}) {
+  // Stores the query options.
+  const query = {
+    prefix: `${PROFILE_IMAGES_DIRECTORY_NAME}/${userID}`,
+  };
+
+  return deleteFiles({
+    bucketName,
+    query,
+  });
 }
 
 /**
@@ -336,10 +358,9 @@ function moderateImage({
 function updateProfileImageURLForUser({
   bucketName,
   filePath,
-  userID,
 }) {
   // Stores the user's ID.
-  const uid = userID? userID: getParentDirectoryName(filePath);
+  const uid = getParentDirectoryName(filePath);
 
   // Store the profile image URL.
   const profileImageURL = getDownloadURL({
@@ -369,6 +390,7 @@ function updateProfileImageURLForUser({
 }
 
 export {
+  deleteProfileImageForUser,
   generateThumbnails,
   isDefaultProfileImage,
   isImage,

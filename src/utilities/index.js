@@ -29,6 +29,7 @@ import {
   setMetadata,
 } from './googleCloudStorage';
 import {
+  deleteProfileImageForUser,
   generateThumbnails,
   isDefaultProfileImage,
   isImage,
@@ -55,12 +56,12 @@ import {
   set,
 } from './cloudFirestore';
 
-import { getISOStringFromUTCTime } from './dateTime';
 import { getPromiseFromWritableStream } from './streams';
 
 export {
   createUserInFirestore,
   deleteFiles,
+  deleteProfileImageForUser,
   deleteUserFromFirestore,
   generateThumbnails,
   getBaseName,
@@ -71,7 +72,6 @@ export {
   getFileName,
   getFunctionNameFromFilePath,
   getGoogleCloudStorageURI,
-  getISOStringFromUTCTime,
   getMatchingFilePaths,
   getParentDirectoryName,
   getPromiseFromWritableStream,

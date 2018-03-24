@@ -15,6 +15,17 @@
  */
 
 /**
+ * Stores the name of the directory containing profile images.
+ * 
+ * @constant
+ * @default
+ * @memberof GoogleCloudStorageDataTypes
+ * @public
+ * @readonly
+ */
+const PROFILE_IMAGES_DIRECTORY_NAME = 'profileImages';
+
+/**
  * Stores the file path of the default profile image.
  * 
  * @constant
@@ -35,17 +46,6 @@ const DEFAULT_PROFILE_IMAGE_FILE_PATH =
  * @readonly
  */
 const DOWNLOAD_URL_BASE = 'https://firebasestorage.googleapis.com/v0/b';
-
-/**
- * Stores the name of the directory containing profile images.
- * 
- * @constant
- * @default
- * @memberof GoogleCloudStorageDataTypes
- * @public
- * @readonly
- */
-const PROFILE_IMAGES_DIRECTORY_NAME = 'profileImages';
 
 /**
  * Stores the resource states for object creation, deletion, moves and updates.

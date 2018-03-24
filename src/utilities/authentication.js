@@ -19,7 +19,6 @@ import {
   FIREBASE_APP,
 } from '../constants';
 import {
-  getISOStringFromUTCTime,
   remove,
   set,
 } from '.';
@@ -50,7 +49,7 @@ function createUserInFirestore({
   const { USERS } = COLLECTION_PATHS;
 
   // Stores the creation time ISO string converted from the creation time.
-  const createdAt = getISOStringFromUTCTime(creationTime);
+  const createdAt = new Date(creationTime);
 
   // Stores the names that split from the display name.
   const names = displayName? splitDisplayName(displayName): {};
@@ -70,7 +69,7 @@ function createUserInFirestore({
       ...(firstName && { firstName }),
       ...(lastName && { lastName }),
       movesCount: 0,
-      ...(profileImageURL && { profileImageURL }),
+      profileImageURL,
       rating: 5,
     },
   });

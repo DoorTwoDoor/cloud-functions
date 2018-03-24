@@ -16,7 +16,11 @@
 
 import * as firebaseFunctions from 'firebase-functions';
 
-import { deleteUserFromFirestore } from '../utilities';
+import {
+  deleteProfileImageForUser,
+  deleteUserFromFirestore,
+  getDefaultBucketName,
+} from '../utilities';
 
 /**
  * Handles a Firebase Authentication user deletion event.
@@ -28,10 +32,22 @@ import { deleteUserFromFirestore } from '../utilities';
 async function handleDeleteEvent({ data: { uid: userID } }) {
   try {
 
-    // @TODO: Delete the user's profile images in Google Cloud storage.
+    // Stores the name of the default bucket.
+    const bucketName = getDefaultBucketName();
 
-    // Deletes the user from Firestore.
-    await deleteUserFromFirestore(userID);
+    // Stores the array of promises.
+    const promises = [
+      // Deletes the user's profile image.
+      deleteProfileImageForUser({
+        bucketName,
+        userID,
+      }),
+      // Deletes the user from Firestore.
+      deleteUserFromFirestore(userID),
+    ];
+
+    // Executes all deletions in parallel.
+    await Promise.all(promises);
 
     return;
 
