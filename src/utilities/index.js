@@ -52,7 +52,9 @@ import {
   joinPaths,
 } from './fileSystem';
 import {
+  getDocumentReference,
   remove,
+  runTransaction,
   set,
 } from './cloudFirestore';
 
@@ -67,6 +69,7 @@ export {
   getBaseName,
   getDefaultBucketName,
   getDirectoryPath,
+  getDocumentReference,
   getDownloadURL,
   getExtensionName,
   getFileName,
@@ -87,6 +90,7 @@ export {
   markImageAsModerated,
   moderateImage,
   remove,
+  runTransaction,
   set,
   setMetadata,
   updateProfileImageURLForUser,
