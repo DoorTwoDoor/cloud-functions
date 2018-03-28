@@ -22,7 +22,7 @@ import {
 } from '../../utilities';
 
 /**
- * Handles a transaction to update the moves count for a reviewee.
+ * Handles a transaction to update the moves count for a mover.
  * 
  * @async
  * @memberof MovesCountUpdate
@@ -35,13 +35,13 @@ async function handleTransaction({
 }) {
   try {
     
-    // Destructures the reviewee property from the data.
-    const { reviewee } = data.data();
+    // Destructures the mover property from the data.
+    const { mover } = data.data();
 
     // Stores the document reference.
     const documentReference = getDocumentReference({
       collectionPath: 'users',
-      documentPath: reviewee,
+      documentPath: mover,
     });
 
     // Stores the document snapshot.
@@ -77,7 +77,7 @@ async function handleTransaction({
 async function handleCreateEvent({ data }) {
   try {
     
-    // Executes the transaction to update the moves count for a reviewee.
+    // Executes the transaction to update the moves count for a mover.
     await runTransaction(transaction => handleTransaction({
       data,
       transaction,
