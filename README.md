@@ -1,6 +1,7 @@
 # Cloud Functions
 
 ### About
+This repository contains a collection of Cloud Functions for Firebase that automatically runs backend code in response to events triggered by Firebase features and HTTPS requests.
 
 ### Getting Started
 1. Install [Node.js](https://www.nodejs.org/en/) for your platform.
@@ -25,6 +26,10 @@ yarn global add firebase-tools
 ```Bash
 firebase login
 ```
+8. Start the watcher to automatically compile code when a source file changes.
+```Bash
+yarn run watch
+```
 
 ### Deployment
 1. Create the production build.
@@ -36,5 +41,11 @@ yarn run build
 yarn run deploy
 ```
 
+### Logs Viewing
+View logs with the Firebase CLI tool.
+```Bash
+yarn run logs
+```
+
 ### License
-Cloud Funtions is licensed under the [Apache-2 License.](https://github.com/DoorTwoDoor/cloud-functions/blob/master/LICENSE).
+Cloud Funtions is licensed under the [Apache-2 License](https://www.github.com/DoorTwoDoor/cloud-functions/blob/master/LICENSE).
